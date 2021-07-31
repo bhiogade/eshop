@@ -6,6 +6,7 @@ const express = require("express");
 const app = express();
 app.use(express.json());
 
+
 mongoose
   .connect("mongodb://localhost/upGrad_Eshop_application")
   .then(() => {
