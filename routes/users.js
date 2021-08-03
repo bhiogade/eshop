@@ -1,3 +1,5 @@
+const jwt = require("jsonwebtoken");
+const config = require("config");
 const bcrypt = require("bcrypt");
 const { User, validate } = require("../models/user");
 const mongoose = require("mongoose");
@@ -11,14 +13,17 @@ router.post("/", async (req, res) => {
 
   // validation if user is not already registered
     let user = await User.findOne({ email: req.body.email }); // looking up by the prop. i.e. email
-  if (user) return res.status(400).send("User already registered.");
+  if (user)
+    return res
+      .status(400)
+      .send("Try any other email, this email is already registered!");
 // At this point we have a valid user object, hence save this into db
   user = new User({
-    password: req.body.password,
     firstName: req.body.firstName,
     lastName: req.body.lastName,
     email: req.body.email,
     contactNumber: req.body.contactNumber,
+    password: req.body.password,
   });
 
    const salt = await bcrypt.genSalt(10); // here
@@ -26,4 +31,9 @@ router.post("/", async (req, res) => {
 
   await user.save();
 
-  res.send(user); // return this new user to client
+  const token = user.generateAuthToken();
+  res.header("x-auth-token", token).send(user);
+
+  });
+
+module.exports = router;
