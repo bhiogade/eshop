@@ -13,6 +13,9 @@ mongoose.set("useUnifiedTopology", true);
 const express = require("express");
 const app = express();
 const cors = require("cors");
+const swaggerUi = require('swagger-ui-express');
+const swaggerDocument = require('./swagger.json');
+
 
 var corsOptions = {
   origin: "http://localhost:3000"
@@ -42,4 +45,5 @@ app.use("/users", users);
 app.use("/auth", auth);
 
 const port = process.env.PORT || 8080;
+app.use('/api-docs',swaggerUi.serve,swaggerUi.setup(swaggerDocument));
 app.listen(port, () => console.log(`Listening on port ${port}...`));
