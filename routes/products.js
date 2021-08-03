@@ -1,4 +1,5 @@
 const auth = require("../middleware/auth");
+const admin = require("../middleware/admin");
 const { Product, validateProduct } = require("../models/product");
 const mongoose = require("mongoose");
 mongoose.set("useNewUrlParser", true);
@@ -65,7 +66,7 @@ router.put("/:id", auth, async (req, res) => {
   res.send(product);
 });
 
-router.delete("/:id", auth, async (req, res) => {
+router.delete("/:id", [auth, admin], async (req, res) => {
   const product = await Product.findByIdAndRemove(req.params.id);
 
   if (!product)
