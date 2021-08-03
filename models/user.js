@@ -1,4 +1,4 @@
-const config = require('config');
+const config = require("config");
 const jwt = require("jsonwebtoken");
 const Joi = require("joi");
 const mongoose = require("mongoose");
@@ -52,10 +52,13 @@ const userSchema = new mongoose.Schema({
   isAdmin: Boolean,
 });
 
-userSchema.methods.generateAuthToken = function(){
-  const token = jwt.sign({_id: this._id ,isAdmin: this.isAdmin},config.get('jwtPrivateKey')); 
+userSchema.methods.generateAuthToken = function () {
+  const token = jwt.sign(
+    { _id: this._id, isAdmin: this.isAdmin },
+    config.get("jwtPrivateKey")
+  );
   return token;
-}
+};
 
 const User = mongoose.model("User", userSchema);
 
@@ -64,8 +67,11 @@ function validateUser(user) {
     password: Joi.string().min(5).max(255).required(),
     firstName: Joi.string().min(3).max(50).required(),
     lastName: Joi.string().min(3).max(50).required(),
-    email: Joi.string().min(5).max(255).required().email(),
-    contactNumber: Joi.number().min(10).required(), // some validation here
+    email: Joi.string()
+     .regex(/^(([a-zA-Z0-9 _ - .]{1,255})+)@(([a-zA-Z0-9]{1,255})+).([a-z]{2,6})$/)
+      .required()
+      .email(),
+    contactNumber: Joi.number().min(10).required(),
   };
 
   return Joi.validate(user, schema);

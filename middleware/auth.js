@@ -5,7 +5,7 @@ function auth(req, res, next){
   const token = req.header('x-auth-token');
 
   // chances are we don't have a token at all, in this case return 401 response
-  if(!token) return res.status(401).send("Access denied. No token provided.");
+  if(!token) return res.status(401).send("Please Login first to access this endpoint!");
 
   // Now verify if this is a valid token 
   try{

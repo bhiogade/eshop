@@ -1,14 +1,31 @@
 const Joi = require("joi");
+Joi.objectId = require('joi-objectid')(Joi);
+const { User, validate } = require("../models/user");
+const { Product, validateProduct, validateProductGet } = require("../models/product");
+const { Address, validateAddress } = require("../models/address");
 const mongoose = require("mongoose");
 mongoose.set("useNewUrlParser", true);
 mongoose.set("useUnifiedTopology", true);
 
 const orderSchema = new mongoose.Schema({
-    name: String,
-    category: String,
-    manufacturer: String,
-    availableItems: Number,
-    price: Number,
+    address : {
+      type : mongoose.Schema.Types.ObjectId,
+      ref : 'Address',
+      required: true
+    },
+    product : {
+      type : mongoose.Schema.Types.ObjectId,
+      ref : 'Product',
+      required: true
+    },
+    quantity :{
+      type: Number,
+      required : true,
+    },
+    user : {
+      type : mongoose.Schema.Types.ObjectId,
+      ref : 'User'
+    }
   });
 
   const Order = mongoose.model("Order", orderSchema);
@@ -16,13 +33,9 @@ const orderSchema = new mongoose.Schema({
 
   function validateOrder(order) {
     const schema = {
-      name: Joi.string().min(3).required(),
-      availableItems: Joi.number().required(),
-      price: Joi.number().positive().required(),
-      category: Joi.string().min(3).required(),
-      description: Joi.string().min(3).required(),
-      imageURL: Joi.string().min(3).required(),
-      manufacturer: Joi.string().min(3).required(),
+      addressId: Joi.objectId().required(), // client should not set dateOut,dateReturned, 
+      productId: Joi.objectId().required(),
+      quantity: Joi.number().min(1).required()
     };
     return Joi.validate(order, schema); // change the type
   }
