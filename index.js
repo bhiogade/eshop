@@ -1,14 +1,24 @@
 const config = require("config");
-const products = require("./routes/products");
-const auth = require("./routes/auth");
-const addresses = require("./routes/addresses");
-const orders = require("./routes/orders");
-const users = require("./routes/users");
+const products = require("./controllers/products");
+const auth = require("./controllers/auth");
+const addresses = require("./controllers/addresses");
+const orders = require("./controllers/orders");
+const users = require("./controllers/users");
 
 const mongoose = require("mongoose");
 
 mongoose.set("useNewUrlParser", true);
 mongoose.set("useUnifiedTopology", true);
+
+const express = require("express");
+const app = express();
+const cors = require("cors");
+
+var corsOptions = {
+  origin: "http://localhost:3000"
+};
+app.use(cors(corsOptions));
+
 
 if (!config.get("jwtPrivateKey")) {
   console.error("FATAL ERROR: jwtPrivateKey is not defined");
@@ -24,8 +34,6 @@ mongoose
   })
   .catch((err) => console.error("Couldnot connected to database"));
 
- const express = require("express");
- const app = express();
 app.use(express.json());
 app.use("/products", products);
 app.use("/addresses", addresses);
@@ -33,5 +41,5 @@ app.use("/orders", orders);
 app.use("/users", users);
 app.use("/auth", auth);
 
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 8080;
 app.listen(port, () => console.log(`Listening on port ${port}...`));

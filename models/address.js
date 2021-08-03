@@ -38,7 +38,11 @@ const Address = mongoose.model("Address", addressSchema);
     street: Joi.string().min(3).required(),
     contactNumber: Joi.number().min(10).required(),
     landmark: Joi.string().min(3).optional(),
-    zipCode: Joi.number().min(6).required(),
+    zipCode: Joi.number().min(100000).max(999999).required().error(() => {
+      return {
+        message: "Invalid zip code!",
+      };
+    })
   };
   return Joi.validate(address, schema); // change the type
 }

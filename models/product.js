@@ -43,10 +43,10 @@ function validateProduct(product) {
 
 function validateProductGet(product) {
   const schema = {
-    name: Joi.string().empty('').default(""),
-    category: Joi.string().empty('').default(""),
-    direction: Joi.any().valid('ASC','DESC'),
-    sortBy: Joi.string().default('productId')
+    name: Joi.string().default(""),
+    category: Joi.string().default(""),
+    direction: Joi.any().valid('ASC','DESC').default('DESC'),
+    sortBy: Joi.string().default('productId'),
   };
   return Joi.validate(product, schema); // change the type
 }
